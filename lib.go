@@ -49,3 +49,7 @@ func Collect[T any](iter Iterator[T])([]T){
 	})
 	return ret
 }
+
+type Ts interface{
+	float32 | ~string
+}
