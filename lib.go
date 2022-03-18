@@ -53,3 +53,10 @@ func Collect[T any](iter Iterator[T])([]T){
 type Ts interface{
 	float32 | ~string
 }
+
+func Filter[T any](it Iterator[T],filter func(v T)(include bool,err error))Iterator[T]{
+	return &filterIter[T]{
+		raw:it,
+		filter:filter,
+	}
+}
