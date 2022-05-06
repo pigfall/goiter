@@ -36,18 +36,21 @@ func Map[From,To any](from Iterator[From],do func(From)(To,error))Iterator[To]{
 	}
 }
 
-func Collect[T any](iter Iterator[T])([]T){
+func Collect[T any](iter Iterator[T])([]T,error){
 	var length =0
 	sliceIt ,ok := iter.(*sliceIter[T])
 	if ok {
 		length = len(sliceIt.slice)
 	}
 	ret := make([]T,0,length)
-	ForEach(iter,func(value T)error{
+	err := ForEach(iter,func(value T)error{
 		ret = append(ret,value)
 		return nil
 	})
-	return ret
+	if err != nil{
+		return nil, err
+	}
+	return ret,nil
 }
 
 type Ts interface{

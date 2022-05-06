@@ -9,7 +9,7 @@ func TestFilter(t *testing.T){
 	sValue := []int{1,2,-1,}
 	s := Slice(sValue)
 	
-	result := Collect(Filter(s,func(v int)(bool,error){
+	result,_ := Collect(Filter(s,func(v int)(bool,error){
 		return v < 0,nil
 	}))
 
