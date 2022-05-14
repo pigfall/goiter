@@ -53,6 +53,14 @@ func Collect[T any](iter Iterator[T])([]T,error){
 	return ret,nil
 }
 
+func MustCollect[T any](iter Iterator[T])([]T){
+	list,err := Collect(iter)
+	if err != nil{
+		panic(err)
+	}
+	return list
+}
+
 type Ts interface{
 	float32 | ~string
 }
