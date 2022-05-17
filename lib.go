@@ -112,3 +112,24 @@ func Exist[T any](it Iterator[T],f func(v T)(ok bool,err error))(bool,error){
 	)
 	return exist,err
 }
+
+func FindFisrt[T any](it Iterator[T],f func(v T)(match bool,err error))(T,bool,error){
+	var find T
+	var findOne bool
+	err := ForEachWithStop(
+		it,
+		func(v T)(stop bool,err error){
+			match,err := f(v)
+			if err != nil{
+				return false,err
+			}
+			if match {
+				find = v
+				findOne = true
+				return true,nil
+			}
+			return false,nil
+		},
+	)
+	return find,findOne,err
+}
