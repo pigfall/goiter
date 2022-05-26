@@ -14,7 +14,10 @@ func TestFlat(t *testing.T){
 		},
 	}
 
-	elems:= Flatten(values)
+	elems,err := Collect(Flatten(Slice(ListSliceToIter(values))))
+	if err != nil{
+		 t.Fatal(err)
+	}
 	if len(elems) != 4{
 		t.Fatal("unexpected")
 	}
