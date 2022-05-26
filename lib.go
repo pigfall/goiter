@@ -11,6 +11,10 @@ func Slice[T any](slice []T)Iterator[T]{
 	}
 }
 
+func Flatten[T any](s Iterator[[]T])Iterator[T]{
+	return &flatIter[T]{inner:s}
+}
+
 func ForEach[T any](it Iterator[T],do func(T)error)error{
 	v,err := it.Next()
 	if err != nil{

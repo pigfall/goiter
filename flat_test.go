@@ -5,16 +5,20 @@ import(
 )
 
 func TestFlat(t *testing.T){
-	values :=[][]string{
-		[]string{
-			"1","2",
+	values :=[][][]string{
+		[][]string{
+			[]string{
+				"1","2",
+			},
 		},
-		[]string{
-			"3","4",
+		[][]string{
+			[]string{
+				"3","4",
+			},
 		},
 	}
 
-	elems,err := Collect(Flatten(Slice(ListSliceToIter(values))))
+	elems,err := Collect(Flatten(Flatten((Slice(values)))))
 	if err != nil{
 		 t.Fatal(err)
 	}

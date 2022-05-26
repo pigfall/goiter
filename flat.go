@@ -1,37 +1,5 @@
 package iter
 
-type flatIter[T any] struct{
-	iter Iterator[Iterator[T]]
-	curIter Iterator[T]
-}
-
-func Flatten[T any](iter Iterator[Iterator[T]])Iterator[T]{
-	return &flatIter[T]{iter:iter}
-}
-
-func (this *flatIter[T]) Next()(Option[T],error){
-	if this.curIter == nil{
-		iter,err := this.iter.Next()
-		if err != nil{
-			return None[T](),err
-		}
-		if iter.IsNone(){
-			return None[T](),nil
-		}
-		this.curIter = iter.Unwrap()
-	}
-
-	i,err := this.curIter.Next()
-	if err != nil{
-		return None[T](),nil
-	}
-	if i.IsNone(){
-		this.curIter = nil
-		return this.Next()
-	}
-	return i,nil
-}
-
 func FlattenSlice[T any](list [][]T)[]T{
 	ret := make([]T,0,len(list))
 	for _,v := range list{
@@ -46,4 +14,34 @@ func ListSliceToIter[T any](list [][]T)[]Iterator[T]{
 		ret = append(ret,Slice(v))
 	}
 	return ret
+}
+
+
+type flatIter[T any] struct{
+	inner Iterator[[]T]
+	index int
+	curList []T
+}
+
+func (this *flatIter[T]) Next()(Option[T],error){
+	if this.curList == nil{
+		list,err := this.inner.Next()
+		if err != nil{
+			return None[T](),nil
+		}
+		if list.IsNone(){
+			return None[T](),nil
+
+		}
+		this.curList = list.Unwrap()
+		this.index = 0
+	}
+	if this.index >= len(this.curList){
+		this.curList = nil
+		this.index =0
+		return this.Next()
+	}
+	v := this.curList[this.index]
+	this.index++
+	return Some(v),nil
 }

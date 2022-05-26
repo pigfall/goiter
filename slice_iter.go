@@ -13,3 +13,7 @@ func (this *sliceIter[T]) Next()(Option[T],error){
 	return Some[T](first),nil
 }
 
+func (this *sliceIter[T]) IntoIter()Iterator[T]{
+	return this
+}
+
